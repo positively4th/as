@@ -1,0 +1,31 @@
+{
+  "name": "net.p4th.as",
+  "version": "0.0.1",
+  "description": "Yet another mixin approach.",
+  "main": "as.js",
+  "directories": {
+    "test": "tests"
+  },
+  "dependencies": {
+    "chai": "^3.5.0",
+    "underscore": "^1.8.3",
+    "uuid": "^2.0.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "mocha tests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/positively4th/as.git"
+  },
+  "keywords": [
+    "mixin"
+  ],
+  "author": "positively4th@hotmail.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/positively4th/as/issues"
+  },
+  "homepage": "https://github.com/positively4th/as#readme"
+}
