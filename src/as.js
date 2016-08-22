@@ -17,16 +17,11 @@ function inject (model, mixinId, mixin) {
 
 
 function addMixin(mixinId, mixinCreator, model) {
-//    console.log('addMixin', arguments);
-
-    mixinId = mixinId;
     if (model[mixinId]) {
 	return model[mixinId];
     }
     
     var mixin = mixinCreator(model);
-
-//    console.log('mixin', mixin);
 
     _(mixin).each(function (prop, key) {
 	if (_(prop).isFunction()) {
@@ -36,6 +31,8 @@ function addMixin(mixinId, mixinCreator, model) {
 	}			    
     });
     inject(model, mixinId, mixin);
+    //The mixin is injected in the mixin itself to allow code like ...asMixinName(asMixinName(model))
+    inject(mixin, mixinId, mixin);
     return mixin;
 }
 
