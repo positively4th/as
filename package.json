@@ -1,6 +1,6 @@
 {
   "name": "net.p4th.as",
-  "version": "0.0.1",
+  "version": "0.2.0",
   "description": "Yet another mixin approach.",
   "main": "as.js",
   "directories": {

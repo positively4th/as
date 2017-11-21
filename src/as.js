@@ -58,17 +58,30 @@ function asProps(mixin, propSpecs, model) {
     return this;
   }
 
-  var r,w;
+    var r,w,rights, useDef;
   _(propSpecs).each(function (spec, key) {
-    r = spec.indexOf('r') >= 0;
-    w = spec.indexOf('w') >= 0;
-    if (r && w) {
-      mixin[key] = getSet.bind(model, key);
-    } else if (w) { //Todo: Remove this stupid case?
-      mixin[key] = set.bind(model, key);
-    } else if (r) {
-      mixin[key] = get.bind(model, key);
-    }
+      
+      if (typeof spec === 'string') {
+	  rights = spec;
+	  useDef = false;
+      } else {
+	  rights = spec.rights;
+	  useDef = spec.hasOwnProperty('default');
+      }	  
+
+      r = rights.indexOf('r') >= 0;
+      w = rights.indexOf('w') >= 0;
+      
+      if (r && w) {
+	  mixin[key] = getSet.bind(model, key);
+      } else if (w) { //Todo: Remove this stupid case?
+	  mixin[key] = set.bind(model, key);
+      } else if (r) {
+	  mixin[key] = get.bind(model, key);
+      }
+      if (useDef && !model.hasOwnProperty(key)) {
+	  model[key] = spec.default(model);
+      }
   });
   return mixin;
 }

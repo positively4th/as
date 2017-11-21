@@ -9,10 +9,14 @@ var uuid = require('uuid').v4;
 var userUUID = uuid();
 
 var userPropSpecs = {
-	"id": 'r',
-	"username": 'rw',
-	"password": 'rw',
-	"dummyWO": 'w' //Todo: Remove this stupid case?
+    "id": 'r',
+    "username": 'rw',
+    "password": 'rw',
+    "dummyWO": 'w', //Todo: Remove this stupid case?
+    "children": {
+	"rights": 'rw',
+	"default": function (model) { return []; }
+    }
 };  
 
 function userCreator (model) {
@@ -71,6 +75,47 @@ describe('addMixin', function() {
 	assert.equal(userModel.username, 'aUsername2');
 	assert.equal(userModel.password, 'aPassword2');
 	assert.equal(user.dummyWO(), userModel);
+	
+	done();
+    });
+    
+
+    it('Should generate a default children array', function (done) {
+	var userModel = {
+	    id: 'aId0',
+	    username: 'aUsername0',
+	    password: 'aPassword0',
+	    dummyWO: 'aDummyWO0'
+	    
+	};
+	var user = asUser(userModel);
+	
+	assert.equal(user.id(), 'aId0');
+	assert.equal(user.username(), 'aUsername0');
+	assert.equal(user.password(), 'aPassword0');
+	assert.deepEqual(user.dummyWO(), userModel);
+	assert.deepEqual(user.children(), []);
+
+	
+	done();
+    });
+    
+    it('Should generate keep supplied children array', function (done) {
+	var userModel = {
+	    id: 'aId0',
+	    username: 'aUsername0',
+	    password: 'aPassword0',
+	    dummyWO: 'aDummyWO0',
+	    children: ['c1', 'c2']
+	};
+	var user = asUser(userModel);
+	
+	assert.equal(user.id(), 'aId0');
+	assert.equal(user.username(), 'aUsername0');
+	assert.equal(user.password(), 'aPassword0');
+	assert.deepEqual(user.dummyWO(), userModel);
+	assert.deepEqual(user.children(), ['c1', 'c2']);
+
 	
 	done();
     });
