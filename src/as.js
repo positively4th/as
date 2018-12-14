@@ -1,24 +1,35 @@
 var _ = require('underscore');
 var uuid = require('uuid').v4();
 
-function MixinProto() {
-  this[uuid] = uuid;
-  return this;
+function MixinProto(proto={}) {
+    _.extendOwn(this, proto);
+    this[uuid] = uuid;
+    return this;
 }
 
-function inject (model, mixinId, mixin) {
+function inject (model, mixinId, mixin, proto={}) {
 
-  if (!model[uuid] || model[uuid] === uuid) {
-    var p = new MixinProto();
-    p.constructor = model.__proto__.constructor;
-    p.__proto__ = model.__proto__;
-    model.__proto__ = p;
-  }
-  model.__proto__[mixinId] = mixin;
+    if (!model[uuid] || model[uuid] !== uuid) {
+        var p = new MixinProto(proto);
+        p.constructor = model.__proto__.constructor;
+        p.__proto__ = model.__proto__;
+
+        model.__proto__ = p;
+
+/*
+        if (proto) {
+            var _proto = _.extendOwn({}, proto);
+            _proto.__proto__ = p.__proto__;
+            p.__proto__ = _proto; 
+        }
+*/
+    }
+    
+    model.__proto__[mixinId] = mixin;
 }
 
 
-function addMixin(mixinId, mixinCreator, model) {
+function addMixin(mixinId, mixinCreator, model, proto) {
   if (model[mixinId]) {
     return model[mixinId];
   }
@@ -32,9 +43,9 @@ function addMixin(mixinId, mixinCreator, model) {
       mixin[key] = prop;
     }
   });
-  inject(model, mixinId, mixin);
+    inject(model, mixinId, mixin, proto);
   //The mixin is injected in the mixin itself to allow code like ...asMixinName(asMixinName(model))
-  inject(mixin, mixinId, mixin);
+    inject(mixin, mixinId, mixin, proto);
   return mixin;
 }
 

@@ -1,17 +1,20 @@
 {
   "name": "positively4th.as",
-  "version": "0.2.3",
+  "version": "0.3.0",
   "description": "Yet another mixin approach.",
   "main": "src/as.js",
   "directories": {
     "test": "tests"
   },
   "dependencies": {
-    "chai": "^3.5.0",
     "underscore": "^1.8.3",
     "uuid": "^2.0.1"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^5.2.0",
+    "npx": "^10.2.0"
+  },
   "scripts": {
     "test": "mocha tests"
   },
