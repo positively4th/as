@@ -99,7 +99,7 @@ function asProps(mixin, propSpecs, model) {
 
 
 
-mineAsYours = function (fs, my, yours) {
+function mineAsYours(fs, my, yours) {
 
   function helper (f) {
     return function () {
