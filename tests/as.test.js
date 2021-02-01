@@ -1,7 +1,7 @@
 var chai = require('chai');
 var assert = chai.assert;
 var _ = require('underscore');
-var as = require('../src/as');
+import as from '../esm/wrapper';
 var uuid = require('uuid').v4;
 
 
