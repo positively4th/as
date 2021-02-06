@@ -36,8 +36,8 @@ function addMixin(mixinId, mixinCreator, model, proto) {
 
   var mixin = mixinCreator(model);
 
-  _(mixin).each(function (prop, key) {
-    if (_(prop).isFunction()) {
+  _.each(mixin, function (prop, key) {
+    if (_.isFunction(prop)) {
       mixin[key] = prop.bind(model);
     } else {
       mixin[key] = prop;
@@ -70,7 +70,7 @@ function asProps(mixin, propSpecs, model) {
   }
 
     var r,w,rights, useDef;
-  _(propSpecs).each(function (spec, key) {
+  _.each(propSpecs, function (spec, key) {
       
       if (typeof spec === 'string') {
 	  rights = spec;
@@ -112,7 +112,7 @@ function mineAsYours(fs, my, yours) {
   }
 
   yours = yours || {};
-  _(fs).each(function (f) {
+  _.each(fs, function (f) {
     yours[f] = helper(my[f]);
   });
   return yours;
