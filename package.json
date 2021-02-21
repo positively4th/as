@@ -10,17 +10,18 @@
         "test": "tests"
     },
     "dependencies": {
-        "underscore": "^1.8.3",
-        "uuid": "^2.0.1"
+        "underscore": "^1.12.0",
+        "uuid": "^8.3.2"
     },
     "devDependencies": {
+        "chai": "^4.3.0",
         "esm": "^3.2.25",
-        "chai": "^3.5.0",
-        "mocha": "^5.2.0",
-        "npx": "^10.2.0"
+        "minimist": ">=1.2.5",
+        "mocha": "^8.3.0",
+        "npx": "^10.2.2"
     },
     "scripts": {
-        "test": "mocha tests --require node_modules/esm"
+        "test": "mocha tests --require esm"
     },
     "repository": {
         "type": "git",
