@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "target": "ES6" /* Output compatible with most environments */,
+    "module": "NodeNext" /* Modern module resolution */,
+    "moduleResolution": "NodeNext",
+    "declaration": true /* Generate .d.ts files */,
+    "declarationDir": "./types" /* Put types in their own folder */,
+    "outDir": "./dist" /* Compiled JS goes here */,
+    "rootDir": "./src" /* Your source code will live here */,
+    "strict": true /* Ensure high quality code */,
+    "esModuleInterop": true /* Fixes imports for underscore/uuid */,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "allowJs": true /* Allows us to migrate one file at a time */
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "tests"]
+}
