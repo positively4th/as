@@ -4,7 +4,19 @@ import { v4 as uuidv4 } from "uuid";
 
 type Proto = Record<string | symbol, any>;
 type MixinId = string;
-type MixinCreator<M extends object, R extends object> = (model: M) => R & M;
+type MixinCreator<M extends object, R extends object> = (model: M) => R;
+
+type PropRights = "r" | "w" | "rw";
+type PropSpec<M extends object> =
+  | PropRights
+  | { rights: PropRights; default?: (model: M) => any };
+type PropSpecs<M extends object> = Record<string, PropSpec<M>>;
+
+type PropAccessor<V> = () => V;
+type PropRW<V, Self> = {
+  (): V;
+  (value: V): Self;
+};
 
 const uuid = uuidv4();
 
@@ -36,10 +48,10 @@ function inject<M extends object, R extends object>(
 
 function addMixin<M extends object, R extends object>(
   mixinId: MixinId,
-  mixinCreator: MixinCreator,
+  mixinCreator: MixinCreator<M, R>,
   model: M,
   proto
-) {
+): R {
   if (model[mixinId]) {
     return model[mixinId];
   }
@@ -59,9 +71,9 @@ function addMixin<M extends object, R extends object>(
   return mixin;
 }
 
-function addMixinV3<M, R>(
+function addMixinV3<M extends object, R extends object>(
   mixinId: MixinId,
-  mixinCreator: MixinCreator,
+  mixinCreator: MixinCreator<M, R>,
   model: M
 ): M & R {
   if (initializedMixinIds.get(model) === mixinId) {
@@ -121,9 +133,9 @@ function addMixinV3<M, R>(
 
 function asProps<M extends object, R extends object>(
   mixin: R,
-  propSpecs: PropSpecs,
+  propSpecs: PropSpecs<M>,
   model: M
-) {
+): R {
   propSpecs = propSpecs || {};
 
   function getSet(key, val) {
@@ -191,6 +203,7 @@ function mineAsYours(fs, my, yours) {
 
 // Export as ES module
 export { addMixin, addMixinV3, asProps, mineAsYours };
+export type { PropSpecs, PropAccessor, PropRW };
 
 // Default export for convenience
 export default {
