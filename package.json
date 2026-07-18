@@ -1,6 +1,6 @@
 {
     "name": "positively4th.as",
-    "version": "2.0.0",
+    "version": "3.0.0",
     "description": "Yet another mixin approach.",
     "main": "./dist/as.js",
     "module": "./dist/as.js",
@@ -10,7 +10,7 @@
         ".": {
             "types": "./types/as.d.ts",
             "import": "./dist/as.js",
-            "require": "./dist/as.js"
+            "default": "./dist/as.js"
         }
     },
     "directories": {
