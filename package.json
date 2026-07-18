@@ -33,7 +33,9 @@
     },
     "scripts": {
         "build": "tsc",
-        "test": "NODE_OPTIONS='--import tsx' mocha tests/*.js",
+        "prepublishOnly": "npm run build",
+        "typecheck": "tsc -p tsconfig.tests.json --noEmit",
+        "test": "npm run typecheck && NODE_OPTIONS='--import tsx' mocha tests/*.js tests/*.ts",
         "knip": "npx knip"
     },
     "repository": {
