@@ -8,7 +8,8 @@ type MixinCreator<M extends object, R extends object> = (model: M) => R & M;
 
 const uuid = uuidv4();
 
-const memory = new WeakMap();
+const bareMixins = new WeakMap(); // bare/raw model -> { mixinId: proxy }
+const initializedMixinIds = new WeakMap(); // proxy -> the mixinId it was created for
 
 function MixinProto(proto: Proto = {}) {
   _.extendOwn(this, proto);
@@ -58,16 +59,22 @@ function addMixin<M extends object, R extends object>(
   return mixin;
 }
 
-function addProxyMixin<M, R>(
+function addMixinV3<M, R>(
   mixinId: MixinId,
   mixinCreator: MixinCreator,
   model: M
 ): M & R {
-  if (!memory.has(model)) {
-    memory.set(model, {});
+  if (initializedMixinIds.get(model) === mixinId) {
+    throw new Error(
+      `addMixinV3: mixin "${mixinId}" has already been applied to this value`
+    );
   }
 
-  const mixinMap = memory.get(model);
+  if (!bareMixins.has(model)) {
+    bareMixins.set(model, {});
+  }
+
+  const mixinMap = bareMixins.get(model);
   if (!mixinMap[mixinId]) {
     var mixin = mixinCreator(model);
 
@@ -80,18 +87,36 @@ function addProxyMixin<M, R>(
     });
 
     const handler = {
+      // Mixins add behavior, not state (see asProps/mineAsYours) — like a
+      // class's prototype methods, they're detectable via `in` but stay out
+      // of Object.keys/JSON.stringify/for...in, which reflect model state only.
       get(obj, prop, receiver) {
-        if (prop in mixin) {
+        if (Object.prototype.hasOwnProperty.call(mixin, prop)) {
           return mixin[prop];
         }
         return Reflect.get(obj, prop, receiver);
       },
+      has(obj, prop) {
+        return (
+          Object.prototype.hasOwnProperty.call(mixin, prop) ||
+          Reflect.has(obj, prop)
+        );
+      },
+      set(obj, prop, value, receiver) {
+        if (Object.prototype.hasOwnProperty.call(mixin, prop)) {
+          throw new Error(
+            `addMixinV3: cannot set "${prop}" — it is a mixin-provided property`
+          );
+        }
+        return Reflect.set(obj, prop, value, receiver);
+      },
     };
-    // console.debug("as.js: addProxyMixin", mixinId, model);
-    mixinMap[mixinId] = new Proxy(model, handler);
-    memory.set(model, mixinMap);
+    var proxy = new Proxy(model, handler);
+    mixinMap[mixinId] = proxy;
+    bareMixins.set(model, mixinMap);
+    initializedMixinIds.set(proxy, mixinId);
   }
-  return memory.get(model)[mixinId];
+  return bareMixins.get(model)[mixinId];
 }
 
 function asProps<M extends object, R extends object>(
@@ -165,12 +190,12 @@ function mineAsYours(fs, my, yours) {
 }
 
 // Export as ES module
-export { addMixin, addProxyMixin, asProps, mineAsYours };
+export { addMixin, addMixinV3, asProps, mineAsYours };
 
 // Default export for convenience
 export default {
   addMixin,
-  addProxyMixin,
+  addMixinV3,
   asProps,
   mineAsYours,
 };

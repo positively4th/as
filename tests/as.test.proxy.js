@@ -34,7 +34,7 @@ function userCreator(model) {
 }
 
 var asUser = function (model) {
-  return as.addProxyMixin(userUUID, userCreator, model);
+  return as.addMixinV3(userUUID, userCreator, model);
 };
 
 // module exports asUser
